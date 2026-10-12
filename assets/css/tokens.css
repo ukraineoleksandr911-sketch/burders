@@ -1,0 +1,39 @@
+/* Design tokens. Generated from the client config (theme block). */
+
+@font-face { font-family: "Inter"; font-weight: 100 900; font-style: normal; font-display: swap; src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2"); }
+@font-face { font-family: "Archivo"; font-weight: 100 900; font-style: normal; font-display: swap; src: url("../fonts/archivo-latin-wght-normal.woff2") format("woff2"); }
+
+:root {
+  color-scheme: light;
+  --c-bg: #FFF8F0;
+  --c-surface: #FFFFFF;
+  --c-ink: #1C1B19;
+  --c-muted: #6B625A;
+  --c-border: #EADFD0;
+  --c-cta: #D93428;
+  --c-cta-hover: #C73124;
+  --c-accent: #F5B301;
+  --c-success: #3E7C4F;
+  --c-error: #B3261E;
+  --c-dark: #151515;
+  --accent-rgb: 245 179 1;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --shadow: 0 8px 24px rgb(28 27 25 / .08);
+  --shadow-lg: 0 16px 40px rgb(28 27 25 / .16);
+
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Archivo", "Inter", system-ui, sans-serif;
+
+  --fs-h1: clamp(2.25rem, 1.3rem + 4vw, 4.25rem);
+  --fs-h2: clamp(1.625rem, 1.3rem + 1.1vw, 2.5rem);
+  --fs-h3: clamp(1.125rem, 1.05rem + .4vw, 1.375rem);
+  --fs-body: clamp(1rem, .96rem + .12vw, 1.125rem);
+  --fs-small: .875rem;
+
+  --gutter: 16px;
+  --container: 1240px;
+}
+@media (min-width: 768px) { :root { --gutter: 24px; } }
