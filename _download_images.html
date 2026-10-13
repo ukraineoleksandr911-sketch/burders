@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Завантажити фото для Last Bite</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 600px; margin: 60px auto; padding: 0 20px; }
+  h1 { font-size: 1.4rem; }
+  button { background: #E9A23B; color: #fff; border: none; padding: 14px 28px; font-size: 1rem; border-radius: 8px; cursor: pointer; margin-top: 16px; }
+  button:hover { background: #d4902e; }
+  #log { margin-top: 24px; font-size: .875rem; line-height: 1.8; background: #f5f5f5; padding: 16px; border-radius: 8px; white-space: pre-wrap; min-height: 40px; }
+  .ok { color: #2a7a2a; } .err { color: #c00; } .info { color: #555; }
+</style>
+</head>
+<body>
+<h1>🍔 Завантаження фото для Last Bite</h1>
+<p>Натисни кнопку, оберіть папку <strong>assets/img</strong> у папці проекту, і всі фото збережуться автоматично.</p>
+<button id="btn">Вибрати папку і завантажити фото</button>
+<div id="log">Натисніть кнопку щоб почати…</div>
+
+<script>
+const IMAGES = {
+  "hero-burger.jpg":        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&q=82&auto=format&fit=crop",
+  "dish-last-bite.jpg":     "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=600&q=80&auto=format&fit=crop",
+  "dish-classic.jpg":       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80&auto=format&fit=crop",
+  "dish-bbq.jpg":           "https://images.unsplash.com/photo-1582196016237-02b96d2f72e4?w=600&q=80&auto=format&fit=crop",
+  "dish-pulled-pork.jpg":   "https://images.unsplash.com/photo-1572802419509-d6dc0b7f2d4c?w=600&q=80&auto=format&fit=crop",
+  "dish-veggie.jpg":        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80&auto=format&fit=crop",
+  "dish-chilli-chicken.jpg":"https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=600&q=80&auto=format&fit=crop",
+  "dish-tenders.jpg":       "https://images.unsplash.com/photo-1585325701792-0432e41ddf9e?w=600&q=80&auto=format&fit=crop",
+  "dish-wings.jpg":         "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=600&q=80&auto=format&fit=crop",
+  "dish-fries.jpg":         "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80&auto=format&fit=crop",
+  "dish-loaded-fries.jpg":  "https://images.unsplash.com/photo-1619474024780-badd9b01b3a8?w=600&q=80&auto=format&fit=crop",
+  "dish-poutine.jpg":       "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&q=80&auto=format&fit=crop",
+  "dish-onion-rings.jpg":   "https://images.unsplash.com/photo-1580252520720-8b1ec88f0f2d?w=600&q=80&auto=format&fit=crop",
+  "dish-slaw.jpg":          "https://images.unsplash.com/photo-1512058454905-6b841e7ad132?w=600&q=80&auto=format&fit=crop",
+  "dish-shake.jpg":         "https://images.unsplash.com/photo-1568901839119-631418a3910d?w=600&q=80&auto=format&fit=crop",
+  "dish-choc-shake.jpg":    "https://images.unsplash.com/photo-1572490122132-bb8756bc7f66?w=600&q=80&auto=format&fit=crop",
+  "dish-cola.jpg":          "https://images.unsplash.com/photo-1606168094336-48f8c4a12f97?w=600&q=80&auto=format&fit=crop",
+  "dish-lemonade.jpg":      "https://images.unsplash.com/photo-1621506289-f598af7ec74a?w=600&q=80&auto=format&fit=crop",
+  "dish-cookie.jpg":        "https://images.unsplash.com/photo-1558961363-b4aba37b1ca2?w=600&q=80&auto=format&fit=crop",
+  "dish-brownie.jpg":       "https://images.unsplash.com/photo-1564355808539-beefb463c57e?w=600&q=80&auto=format&fit=crop",
+  "dish-sauce.jpg":         "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&q=80&auto=format&fit=crop",
+  "dish-salad.jpg":         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80&auto=format&fit=crop",
+  "dish-combo.jpg":         "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&q=80&auto=format&fit=crop",
+  "section-builder.jpg":    "https://images.unsplash.com/photo-1550547660-d9450f859349?w=900&q=80&auto=format&fit=crop",
+};
+
+const log = document.getElementById('log');
+function addLog(msg, cls='') {
+  log.innerHTML += `<span class="${cls}">${msg}\n</span>`;
+}
+
+document.getElementById('btn').addEventListener('click', async () => {
+  log.innerHTML = '';
+  try {
+    addLog('Вибір папки…', 'info');
+    const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite', startIn: 'desktop' });
+    addLog(`Папка: ${dirHandle.name}\n`, 'info');
+
+    let ok = 0, fail = 0;
+    for (const [name, url] of Object.entries(IMAGES)) {
+      addLog(`  ${name}… `, 'info');
+      try {
+        const resp = await fetch(url);
+        const blob = await resp.blob();
+        const fileHandle = await dirHandle.getFileHandle(name, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        const kb = Math.round(blob.size / 1024);
+        addLog(`OK (${kb} KB)`, 'ok');
+        ok++;
+      } catch(e) {
+        addLog(`ПОМИЛКА: ${e.message}`, 'err');
+        fail++;
+      }
+    }
+    addLog(`\n✅ Готово! ${ok} фото збережено${fail ? ', ' + fail + ' помилок' : ''}.`, 'ok');
+  } catch(e) {
+    addLog('Скасовано або помилка: ' + e.message, 'err');
+  }
+});
+</script>
+</body>
+</html>
